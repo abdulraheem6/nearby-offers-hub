@@ -181,5 +181,31 @@
     "whatsapp": "919876543211",
     "latitude": 28.6245,
     "longitude": 77.2185
+  },
+    {
+    "id": 15,
+    "title": "🍕 Pizza Paradise",
+    "description": "Buy 1 Get 1 Free on all large pizzas",
+    "category": "Food",
+    "featured": false,
+    "expiryDate": "2027-10-15",
+    "type": "image",
+    "image": "https://picsum.photos/id/106/400/600",
+    "whatsapp": "919876543212",
+    "latitude": 28.6000,
+    "longitude": 77.2000
+  },
+  {
+    "id": 16,
+    "title": "💪 Fitness First",
+    "description": "40% off on annual gym membership",
+    "category": "Fitness",
+    "featured": false,
+    "expiryDate": "2027-09-30",
+    "type": "youtube",
+    "youtubeUrl": "dQw4w9WgXcQ",
+    "whatsapp": "919876543213",
+    "latitude": 28.6300,
+    "longitude": 77.2200
   }
 ]

@@ -6,6 +6,7 @@ import { getUserLocation, getNearbyOffers, sortByDistance } from './utils/distan
 
 function App() {
   const [ads, setAds] = useState([]);
+  const [originalAds, setOriginalAds] = useState([]);
   const [filteredAds, setFilteredAds] = useState([]);
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('all');
@@ -35,19 +36,13 @@ function App() {
     fetchAds();
   }, []);
 
-  // Get user location when nearby mode is enabled
-  useEffect(() => {
-    if (nearbyMode && !userLocation && !locationLoading) {
-      getUserLocationHandler();
-    }
-  }, [nearbyMode]);
-
   const fetchAds = async () => {
     try {
       const response = await fetch('/nearby-offers-hub/ads.json');
       const data = await response.json();
       const sortedAds = sortAdsByFeatured(data);
       setAds(sortedAds);
+      setOriginalAds(sortedAds);
       setFilteredAds(sortedAds);
     } catch (error) {
       console.error('Error loading ads:', error);
@@ -62,41 +57,54 @@ function App() {
     try {
       const location = await getUserLocation();
       setUserLocation(location);
-      
-      // Auto-enable nearby mode after getting location
-      if (nearbyMode) {
-        applyNearbyFilter(location);
-      }
+      return location;
     } catch (error) {
       setLocationError(error.message);
       setNearbyMode(false);
+      return null;
     } finally {
       setLocationLoading(false);
     }
   };
 
-  const applyNearbyFilter = (location) => {
-    if (!location) return;
+  const applyNearbyFilter = useCallback((location, currentRadius, adsToFilter = ads) => {
+    if (!location) return [];
     
-    const nearbyOffers = getNearbyOffers(ads, location, radius);
-    console.log(`Found ${nearbyOffers.length} nearby offers within ${radius}km`);
-    setFilteredAds(nearbyOffers);
-  };
+    const nearbyOffers = getNearbyOffers(adsToFilter, location, currentRadius);
+    console.log(`📍 Found ${nearbyOffers.length} nearby offers within ${currentRadius}km`);
+    
+    // Sort by distance (nearest first)
+    const sortedNearby = sortByDistance(nearbyOffers, location);
+    return sortedNearby;
+  }, [ads]);
 
-  const toggleNearbyMode = () => {
+  const toggleNearbyMode = async () => {
     if (!nearbyMode) {
       // Turning ON nearby mode
-      if (userLocation) {
-        applyNearbyFilter(userLocation);
-      } else {
-        getUserLocationHandler();
+      setLocationLoading(true);
+      const location = await getUserLocationHandler();
+      if (location) {
+        setNearbyMode(true);
+        const nearbyOffers = applyNearbyFilter(location, radius, originalAds);
+        setFilteredAds(nearbyOffers);
       }
     } else {
       // Turning OFF nearby mode - show all ads
-      const sortedAds = sortAdsByFeatured(ads);
+      setNearbyMode(false);
+      const sortedAds = sortAdsByFeatured(originalAds);
       setFilteredAds(sortedAds);
+      setSelectedCategory('all');
+      setSearchTerm('');
     }
-    setNearbyMode(!nearbyMode);
+  };
+
+  const handleRadiusChange = async (newRadius) => {
+    setRadius(newRadius);
+    if (nearbyMode && userLocation) {
+      // Re-apply nearby filter with new radius
+      const nearbyOffers = applyNearbyFilter(userLocation, newRadius, originalAds);
+      setFilteredAds(nearbyOffers);
+    }
   };
 
   const sortAdsByFeatured = (adsArray) => {
@@ -109,13 +117,15 @@ function App() {
 
   const filterAds = useCallback(() => {
     let filtered = nearbyMode && userLocation 
-      ? getNearbyOffers(ads, userLocation, radius)
-      : [...ads];
+      ? applyNearbyFilter(userLocation, radius, originalAds)
+      : [...originalAds];
 
+    // Apply category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(ad => ad.category === selectedCategory);
     }
 
+    // Apply search filter
     if (searchTerm.trim()) {
       filtered = filtered.filter(ad =>
         ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -123,23 +133,20 @@ function App() {
       );
     }
 
+    // Filter expired offers
     filtered = filtered.filter(ad => {
       if (!ad.expiryDate) return true;
       return new Date(ad.expiryDate) > new Date();
     });
 
-    if (nearbyMode && userLocation) {
-      filtered = sortByDistance(filtered, userLocation);
-    }
-
     setFilteredAds(filtered);
-  }, [ads, selectedCategory, searchTerm, nearbyMode, userLocation, radius]);
+  }, [originalAds, selectedCategory, searchTerm, nearbyMode, userLocation, radius, applyNearbyFilter]);
 
   useEffect(() => {
     filterAds();
   }, [filterAds]);
 
-  const categories = ['all', ...new Set(ads.map(ad => ad.category))];
+  const categories = ['all', ...new Set(originalAds.map(ad => ad.category))];
   const getCategoryCount = (category) => {
     if (category === 'all') return filteredAds.length;
     return filteredAds.filter(ad => ad.category === category).length;
@@ -151,9 +158,9 @@ function App() {
   }));
 
   const toggleTheme = () => setDarkMode(!darkMode);
-
+  
   // Count offers with location data
-  const offersWithLocation = ads.filter(ad => ad.latitude && ad.longitude).length;
+  const offersWithLocation = originalAds.filter(ad => ad.latitude && ad.longitude).length;
 
   if (loading) {
     return (
@@ -196,17 +203,25 @@ function App() {
           onClick={toggleNearbyMode}
           disabled={locationLoading}
         >
-          {locationLoading ? '📍 Getting location...' : nearbyMode ? '📍 Nearby Mode ON' : '📍 Show Nearby Offers'}
+          {locationLoading ? '📍 Getting location...' : nearbyMode ? '✅ Nearby Mode ON' : '📍 Show Nearby Offers'}
         </button>
         
         {nearbyMode && userLocation && (
           <div className="radius-selector">
             <span>Within</span>
-            <select value={radius} onChange={(e) => setRadius(Number(e.target.value))}>
+            <select 
+              value={radius} 
+              onChange={(e) => handleRadiusChange(Number(e.target.value))}
+              className="radius-dropdown"
+            >
+              <option value={1}>1 km</option>
+              <option value={2}>2 km</option>
               <option value={5}>5 km</option>
               <option value={10}>10 km</option>
+              <option value={15}>15 km</option>
               <option value={25}>25 km</option>
               <option value={50}>50 km</option>
+              <option value={100}>100 km</option>
             </select>
           </div>
         )}
@@ -219,7 +234,13 @@ function App() {
         
         {nearbyMode && userLocation && (
           <div className="nearby-info">
-            {filteredAds.length} offers within {radius}km
+            📍 {filteredAds.length} offers within {radius}km
+          </div>
+        )}
+        
+        {!nearbyMode && offersWithLocation > 0 && (
+          <div className="nearby-hint">
+            💡 {offersWithLocation} offers have locations
           </div>
         )}
       </div>
