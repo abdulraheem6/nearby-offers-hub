@@ -4,7 +4,7 @@ import { useInView } from 'react-intersection-observer';
 function VideoCard({ ad, index }) {
   const videoRef = useRef(null);
   const { ref, inView } = useInView({
-    threshold: 0.6,
+    threshold: 0.5,
     triggerOnce: false,
   });
 
@@ -19,7 +19,14 @@ function VideoCard({ ad, index }) {
   }, [inView]);
 
   return (
-    <div ref={ref} style={{ width: '100%', height: '100%' }}>
+    <div ref={ref} style={{ 
+      width: '100%', 
+      height: '100%',
+      display: 'flex',
+      alignItems: 'center',
+      justifyContent: 'center',
+      background: '#000'
+    }}>
       <video
         ref={videoRef}
         src={ad.video}
@@ -27,7 +34,11 @@ function VideoCard({ ad, index }) {
         loop
         muted
         playsInline
-        style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+        style={{
+          width: '100%',
+          height: '100%',
+          objectFit: 'cover',
+        }}
       />
     </div>
   );
