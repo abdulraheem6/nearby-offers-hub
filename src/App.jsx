@@ -20,7 +20,7 @@ function App() {
   const [userLocation, setUserLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
   const [locationError, setLocationError] = useState(null);
-  const [radius, setRadius] = useState(10); // 10km default radius
+  const [radius, setRadius] = useState(10);
 
   useEffect(() => {
     if (darkMode) {
@@ -35,6 +35,15 @@ function App() {
   useEffect(() => {
     fetchAds();
   }, []);
+
+  // Add/remove class based on nearby mode
+  useEffect(() => {
+    if (nearbyMode) {
+      document.querySelector('.app-container')?.classList.add('has-nearby-bar');
+    } else {
+      document.querySelector('.app-container')?.classList.remove('has-nearby-bar');
+    }
+  }, [nearbyMode]);
 
   const fetchAds = async () => {
     try {
@@ -67,29 +76,28 @@ function App() {
     }
   };
 
-  const applyNearbyFilter = useCallback((location, currentRadius, adsToFilter = ads) => {
+  const applyNearbyFilter = useCallback((location, currentRadius, adsToFilter = originalAds) => {
     if (!location) return [];
     
     const nearbyOffers = getNearbyOffers(adsToFilter, location, currentRadius);
     console.log(`📍 Found ${nearbyOffers.length} nearby offers within ${currentRadius}km`);
     
-    // Sort by distance (nearest first)
     const sortedNearby = sortByDistance(nearbyOffers, location);
     return sortedNearby;
-  }, [ads]);
+  }, [originalAds]);
 
   const toggleNearbyMode = async () => {
     if (!nearbyMode) {
-      // Turning ON nearby mode
       setLocationLoading(true);
       const location = await getUserLocationHandler();
       if (location) {
         setNearbyMode(true);
         const nearbyOffers = applyNearbyFilter(location, radius, originalAds);
         setFilteredAds(nearbyOffers);
+        setSelectedCategory('all');
+        setSearchTerm('');
       }
     } else {
-      // Turning OFF nearby mode - show all ads
       setNearbyMode(false);
       const sortedAds = sortAdsByFeatured(originalAds);
       setFilteredAds(sortedAds);
@@ -101,7 +109,6 @@ function App() {
   const handleRadiusChange = async (newRadius) => {
     setRadius(newRadius);
     if (nearbyMode && userLocation) {
-      // Re-apply nearby filter with new radius
       const nearbyOffers = applyNearbyFilter(userLocation, newRadius, originalAds);
       setFilteredAds(nearbyOffers);
     }
@@ -120,12 +127,10 @@ function App() {
       ? applyNearbyFilter(userLocation, radius, originalAds)
       : [...originalAds];
 
-    // Apply category filter
     if (selectedCategory !== 'all') {
       filtered = filtered.filter(ad => ad.category === selectedCategory);
     }
 
-    // Apply search filter
     if (searchTerm.trim()) {
       filtered = filtered.filter(ad =>
         ad.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -133,7 +138,6 @@ function App() {
       );
     }
 
-    // Filter expired offers
     filtered = filtered.filter(ad => {
       if (!ad.expiryDate) return true;
       return new Date(ad.expiryDate) > new Date();
@@ -159,7 +163,6 @@ function App() {
 
   const toggleTheme = () => setDarkMode(!darkMode);
   
-  // Count offers with location data
   const offersWithLocation = originalAds.filter(ad => ad.latitude && ad.longitude).length;
 
   if (loading) {
@@ -173,7 +176,7 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="feed-container" style={{ marginTop: '60px' }}>
+        <div className="feed-container">
           {[...Array(3)].map((_, i) => (
             <div key={i} className="feed-item">
               <div className="skeleton-card" />
@@ -196,7 +199,7 @@ function App() {
         </div>
       </div>
       
-      {/* Nearby Mode Toggle Bar */}
+      {/* Nearby Mode Toggle Bar - VISIBLE NOW */}
       <div className="nearby-bar">
         <button 
           className={`nearby-toggle ${nearbyMode ? 'active' : ''}`}

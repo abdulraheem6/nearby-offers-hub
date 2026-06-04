@@ -799,3 +799,38 @@ body {
     transform: translateY(-2px);
   }
 }
+
+/* CRITICAL FIX: Ensure nearby bar is always visible */
+.nearby-bar {
+  display: flex !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  background: var(--bg-primary) !important;
+  border-bottom: 2px solid #667eea !important;
+  min-height: 52px !important;
+}
+
+.nearby-toggle {
+  display: inline-flex !important;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%) !important;
+  color: white !important;
+  font-weight: bold !important;
+}
+
+.nearby-toggle.active {
+  background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%) !important;
+}
+
+/* Ensure feed container adjusts properly */
+.app-container.has-nearby-bar .feed-container {
+  margin-top: 164px !important;
+}
+
+.app-container.has-nearby-bar .feed-item {
+  height: calc(100vh - 164px) !important;
+}
+
+/* Debug border to see nearby bar */
+.nearby-bar {
+  border: 1px solid red !important; /* Remove this after confirming it works */
+}
