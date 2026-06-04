@@ -1,0 +1,156 @@
+[
+  {
+    "id": 1,
+    "title": "🔥 Mega Electronics Sale",
+    "description": "Up to 70% off on smartphones, laptops, and accessories. Limited time offer!",
+    "category": "Electronics",
+    "featured": true,
+    "expiryDate": "2027-12-31",
+    "type": "video",
+    "video": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+    "poster": "https://picsum.photos/id/0/400/600",
+    "whatsapp": "919876543210"
+  },
+  {
+    "id": 2,
+    "title": "👗 Fashion Week Special",
+    "description": "Buy 1 Get 1 Free on all winter collection. Premium brands available.",
+    "category": "Fashion",
+    "featured": true,
+    "expiryDate": "2027-11-30",
+    "type": "carousel",
+    "images": [
+      "https://picsum.photos/id/20/400/600",
+      "https://picsum.photos/id/21/400/600",
+      "https://picsum.photos/id/22/400/600"
+    ],
+    "whatsapp": "919876543211"
+  },
+  {
+    "id": 3,
+    "title": "🍕 Pizza Mania",
+    "description": "50% off on all large pizzas. Free delivery on orders above ₹499",
+    "category": "Food",
+    "featured": true,
+    "expiryDate": "2027-10-15",
+    "type": "image",
+    "image": "https://picsum.photos/id/106/400/600",
+    "whatsapp": "919876543212"
+  },
+  {
+    "id": 4,
+    "title": "🏋️‍♂️ Gym Membership Flash Sale",
+    "description": "Annual membership at 40% discount. Includes PT sessions and diet plan",
+    "category": "Fitness",
+    "featured": false,
+    "expiryDate": "2027-09-30",
+    "type": "youtube",
+    "youtubeUrl": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+    "whatsapp": "919876543213"
+  },
+  {
+    "id": 5,
+    "title": "📚 Bookstore Clearance",
+    "description": "Up to 80% off on bestsellers. Buy 3 get 1 free on fiction",
+    "category": "Books",
+    "featured": false,
+    "expiryDate": "2027-08-20",
+    "type": "carousel",
+    "images": [
+      "https://picsum.photos/id/24/400/600",
+      "https://picsum.photos/id/25/400/600",
+      "https://picsum.photos/id/26/400/600",
+      "https://picsum.photos/id/27/400/600"
+    ],
+    "whatsapp": "919876543214"
+  },
+  {
+    "id": 6,
+    "title": "💇 Salon & Spa Deals",
+    "description": "First visit free! 30% off on all hair and beauty services",
+    "category": "Beauty",
+    "featured": false,
+    "expiryDate": "2027-07-31",
+    "type": "video",
+    "video": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_2mb.mp4",
+    "poster": "https://picsum.photos/id/29/400/600",
+    "whatsapp": "919876543215"
+  },
+  {
+    "id": 7,
+    "title": "✈️ Travel Blast",
+    "description": "Domestic flight tickets at ₹1999. Hotel bookings at 40% off",
+    "category": "Travel",
+    "featured": true,
+    "expiryDate": "2027-12-31",
+    "type": "image",
+    "image": "https://picsum.photos/id/15/400/600",
+    "whatsapp": "919876543216"
+  },
+  {
+    "id": 8,
+    "title": "📱 Mobile Accessories",
+    "description": "Buy any 2 items get 1 free. Cases, chargers, earphones available",
+    "category": "Electronics",
+    "featured": false,
+    "expiryDate": "2027-06-25",
+    "type": "carousel",
+    "images": [
+      "https://picsum.photos/id/0/400/600",
+      "https://picsum.photos/id/1/400/600",
+      "https://picsum.photos/id/2/400/600"
+    ],
+    "whatsapp": "919876543217"
+  },
+  {
+    "id": 9,
+    "title": "🎮 Gaming Zone",
+    "description": "PS5 and Xbox bundles at best prices. Free gaming accessories worth ₹5000",
+    "category": "Electronics",
+    "featured": false,
+    "expiryDate": "2027-05-31",
+    "type": "youtube",
+    "youtubeUrl": "dQw4w9WgXcQ",
+    "whatsapp": "919876543218"
+  },
+  {
+    "id": 10,
+    "title": "☕ Coffee Lovers",
+    "description": "Buy 1 Get 1 Free on all beverages. New cold coffee launch",
+    "category": "Food",
+    "featured": false,
+    "expiryDate": "2027-04-30",
+    "type": "image",
+    "image": "https://picsum.photos/id/12/400/600",
+    "whatsapp": "919876543219"
+  },
+  {
+    "id": 11,
+    "title": "🧘 Yoga Workshop",
+    "description": "Free meditation session. 50% off on 3-month yoga course",
+    "category": "Fitness",
+    "featured": false,
+    "expiryDate": "2027-03-15",
+    "type": "video",
+    "video": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_5mb.mp4",
+    "poster": "https://picsum.photos/id/36/400/600",
+    "whatsapp": "919876543220"
+  },
+  {
+    "id": 12,
+    "title": "🎨 Art Exhibition",
+    "description": "Free entry for students. 20% off on all art purchases",
+    "category": "Events",
+    "featured": false,
+    "expiryDate": "2027-02-28",
+    "type": "carousel",
+    "images": [
+      "https://picsum.photos/id/30/400/600",
+      "https://picsum.photos/id/31/400/600",
+      "https://picsum.photos/id/32/400/600",
+      "https://picsum.photos/id/33/400/600",
+      "https://picsum.photos/id/34/400/600"
+    ],
+    "whatsapp": "919876543221"
+  }
+]
