@@ -90,7 +90,7 @@ function App() {
             </button>
           </div>
         </div>
-        <div className="feed-container">
+        <div className="feed-container" style={{ marginTop: '60px' }}>
           {[...Array(3)].map((_, i) => (
             <div key={i} className="feed-item">
               <div className="skeleton-card" />
