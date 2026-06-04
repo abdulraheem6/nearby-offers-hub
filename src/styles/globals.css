@@ -842,7 +842,7 @@ body {
   gap: 10px;
 }
 
-/* Adjust feed container */
+/* Adjust feed container
 .feed-container {
   margin-top: 0 !important;
 }
@@ -851,4 +851,4 @@ body {
   top: auto !important;
   position: relative !important;
   margin-top: 0;
-}
+} */
