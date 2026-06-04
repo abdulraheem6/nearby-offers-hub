@@ -154,5 +154,32 @@
       "https://picsum.photos/id/34/400/600"
     ],
     "whatsapp": "919876543221"
+  },
+    {
+    "id": 13,
+    "title": "🔥 13Mega Electronics Sale",
+    "description": "Up to 70% off on smartphones and laptops",
+    "category": "Electronics",
+    "featured": true,
+    "expiryDate": "2027-12-31",
+    "type": "video",
+    "video": "https://sample-videos.com/video123/mp4/720/big_buck_bunny_720p_1mb.mp4",
+    "poster": "https://picsum.photos/id/0/400/600",
+    "whatsapp": "919876543210",
+    "latitude": 28.6139,
+    "longitude": 77.2090
+  },
+  {
+    "id": 14,
+    "title": "👗 14Fashion Store",
+    "description": "50% off on winter collection",
+    "category": "Fashion",
+    "featured": false,
+    "expiryDate": "2027-11-30",
+    "type": "image",
+    "image": "https://picsum.photos/id/20/400/600",
+    "whatsapp": "919876543211",
+    "latitude": 28.6245,
+    "longitude": 77.2185
   }
 ]
