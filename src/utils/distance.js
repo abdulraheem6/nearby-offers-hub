@@ -1,5 +1,8 @@
+// Utility functions for distance calculation
+// These can be used to show how far an offer is from the user
+
 export function calculateDistance(lat1, lon1, lat2, lon2) {
-  const R = 6371;
+  const R = 6371; // Earth's radius in kilometers
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLon = (lon2 - lon1) * Math.PI / 180;
   const a = Math.sin(dLat/2) * Math.sin(dLat/2) +
@@ -11,7 +14,34 @@ export function calculateDistance(lat1, lon1, lat2, lon2) {
 
 export function formatDistance(distance) {
   if (distance < 1) {
-    return `${Math.round(distance * 1000)}m`;
+    return `${Math.round(distance * 1000)}m away`;
   }
-  return `${distance.toFixed(1)}km`;
+  return `${distance.toFixed(1)}km away`;
+}
+
+// Get user's current location
+export async function getUserLocation() {
+  return new Promise((resolve, reject) => {
+    if (!navigator.geolocation) {
+      reject(new Error('Geolocation not supported'));
+      return;
+    }
+    
+    navigator.geolocation.getCurrentPosition(
+      (position) => {
+        resolve({
+          lat: position.coords.latitude,
+          lng: position.coords.longitude
+        });
+      },
+      (error) => {
+        reject(error);
+      },
+      {
+        enableHighAccuracy: true,
+        timeout: 5000,
+        maximumAge: 0
+      }
+    );
+  });
 }
