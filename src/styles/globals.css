@@ -830,7 +830,25 @@ body {
   height: calc(100vh - 164px) !important;
 }
 
-/* Debug border to see nearby bar */
+
+
+/* Force nearby bar to be visible */
 .nearby-bar {
-  border: 1px solid red !important; /* Remove this after confirming it works */
+  display: flex !important;
+  position: relative;
+  z-index: 1000;
+  margin-top: 60px;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+/* Adjust feed container */
+.feed-container {
+  margin-top: 0 !important;
+}
+
+.category-filter {
+  top: auto !important;
+  position: relative !important;
+  margin-top: 0;
 }
