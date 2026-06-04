@@ -75,7 +75,19 @@ function App() {
     filterAds();
   }, [filterAds]);
 
+  // Get category counts
+  const getCategoryCount = (category) => {
+    if (category === 'all') return ads.length;
+    return ads.filter(ad => ad.category === category).length;
+  };
+
   const categories = ['all', ...new Set(ads.map(ad => ad.category))];
+  
+  // Create categories with counts for display
+  const categoriesWithCounts = categories.map(cat => ({
+    name: cat,
+    count: getCategoryCount(cat)
+  }));
 
   const toggleTheme = () => setDarkMode(!darkMode);
 
@@ -113,11 +125,16 @@ function App() {
         </div>
       </div>
       <CategoryFilter
-        categories={categories}
+        categories={categoriesWithCounts}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
       <Feed ads={filteredAds} />
+      
+      {/* Display number of results */}
+      <div className="results-count">
+        {filteredAds.length} offer{filteredAds.length !== 1 ? 's' : ''} found
+      </div>
     </div>
   );
 }
