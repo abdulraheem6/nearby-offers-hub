@@ -41,17 +41,15 @@ const getUserLocation = () => {
         resolve({
           lat: position.coords.latitude,
           lng: position.coords.longitude,
-          accuracy: position.coords.accuracy
         });
       },
       (error) => {
         let errorMessage = 'Location access denied';
-        if (error.code === 1) errorMessage = '❌ Please allow location access to see nearby offers';
+        if (error.code === 1) errorMessage = '❌ Please allow location access';
         if (error.code === 2) errorMessage = '📍 Location unavailable';
-        if (error.code === 3) errorMessage = '⏱️ Location request timed out';
         reject(new Error(errorMessage));
       },
-      { enableHighAccuracy: true, timeout: 10000, maximumAge: 0 }
+      { enableHighAccuracy: true, timeout: 10000 }
     );
   });
 };
@@ -67,7 +65,6 @@ function App() {
     return localStorage.getItem('theme') === 'dark';
   });
   
-  // Nearby states
   const [nearbyMode, setNearbyMode] = useState(false);
   const [userLocation, setUserLocation] = useState(null);
   const [locationLoading, setLocationLoading] = useState(false);
@@ -87,6 +84,14 @@ function App() {
   useEffect(() => {
     fetchAds();
   }, []);
+
+  useEffect(() => {
+    if (nearbyMode) {
+      document.querySelector('.app-container')?.classList.add('has-nearby-bar');
+    } else {
+      document.querySelector('.app-container')?.classList.remove('has-nearby-bar');
+    }
+  }, [nearbyMode]);
 
   const fetchAds = async () => {
     try {
@@ -202,7 +207,7 @@ function App() {
       <div className="app-container">
         <div className="header">
           <div className="header-content">
-            <div className="logo">📍 Nearby Offers Hub</div>
+            <div className="logo">📍 Nearby Offers</div>
             <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
             <button className="theme-toggle" onClick={toggleTheme}>
               {darkMode ? '☀️' : '🌙'}
@@ -220,12 +225,11 @@ function App() {
     );
   }
 
-  // MAIN RENDER WITH NEARBY BAR - THIS IS VISIBLE NOW
   return (
     <div className="app-container">
       <div className="header">
         <div className="header-content">
-          <div className="logo">📍 Nearby Offers Hub</div>
+          <div className="logo">📍 Nearby Offers</div>
           <SearchBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} />
           <button className="theme-toggle" onClick={toggleTheme}>
             {darkMode ? '☀️' : '🌙'}
@@ -233,74 +237,72 @@ function App() {
         </div>
       </div>
       
-      {/* NEARBY BAR - THIS SHOULD DEFINITELY SHOW NOW */}
-      <div className="nearby-bar" style={{ display: 'flex', background: 'var(--bg-primary)', padding: '10px', borderBottom: '2px solid #667eea' }}>
-        <button 
-          className="nearby-toggle"
-          onClick={toggleNearbyMode}
-          disabled={locationLoading}
-          style={{
-            padding: '10px 20px',
-            background: nearbyMode ? '#11998e' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            border: 'none',
-            borderRadius: '30px',
-            color: 'white',
-            fontWeight: 'bold',
-            cursor: 'pointer'
-          }}
-        >
-          {locationLoading ? '📍 Getting location...' : nearbyMode ? '✅ Nearby Mode ON' : '📍 Show Nearby Offers'}
-        </button>
-        
-        {nearbyMode && userLocation && (
-          <div className="radius-selector" style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'var(--bg-secondary)', padding: '5px 15px', borderRadius: '30px' }}>
-            <span>Within</span>
-            <select 
-              value={radius} 
-              onChange={(e) => handleRadiusChange(Number(e.target.value))}
-              style={{ padding: '5px 10px', borderRadius: '20px', border: '1px solid var(--border-color)' }}
-            >
-              <option value={1}>1 km</option>
-              <option value={2}>2 km</option>
-              <option value={5}>5 km</option>
-              <option value={10}>10 km</option>
-              <option value={25}>25 km</option>
-              <option value={50}>50 km</option>
-            </select>
-          </div>
-        )}
-        
-        {locationError && (
-          <div style={{ color: '#ff4444', fontSize: '12px', padding: '4px 12px', background: 'rgba(255,68,68,0.1)', borderRadius: '20px' }}>
-            ⚠️ {locationError}
-          </div>
-        )}
-        
-        {nearbyMode && userLocation && (
-          <div style={{ fontSize: '13px', color: '#11998e', fontWeight: 'bold', marginLeft: 'auto', background: 'rgba(17,153,142,0.1)', padding: '6px 12px', borderRadius: '20px' }}>
-            📍 {filteredAds.length} offers within {radius}km
-          </div>
-        )}
-        
-        {!nearbyMode && offersWithLocation > 0 && (
-          <div style={{ fontSize: '12px', color: '#667eea', background: 'rgba(102,126,234,0.1)', padding: '6px 12px', borderRadius: '20px' }}>
-            💡 {offersWithLocation} offers have locations
-          </div>
-        )}
-      </div>
-      
       <CategoryFilter
         categories={categoriesWithCounts}
         selectedCategory={selectedCategory}
         setSelectedCategory={setSelectedCategory}
       />
+      
+      {/* Nearby Bar */}
+      <div className="nearby-bar">
+        <button 
+          className={`nearby-toggle ${nearbyMode ? 'active' : ''}`}
+          onClick={toggleNearbyMode}
+          disabled={locationLoading}
+        >
+          {locationLoading ? '📍 Getting...' : nearbyMode ? '✅ Nearby ON' : '📍 Show Nearby'}
+        </button>
+        
+        {nearbyMode && userLocation && (
+          <div className="radius-selector">
+            <span>Within</span>
+            <select 
+              value={radius} 
+              onChange={(e) => handleRadiusChange(Number(e.target.value))}
+              className="radius-dropdown"
+            >
+              <option value={1}>1km</option>
+              <option value={5}>5km</option>
+              <option value={10}>10km</option>
+              <option value={15}>15km</option>
+              <option value={25}>25km</option>
+              <option value={35}>35km</option>
+              <option value={50}>50km</option>
+            </select>
+          </div>
+        )}
+        
+        {locationError && (
+          <div className="location-error">
+            ⚠️ {locationError}
+          </div>
+        )}
+        
+        {nearbyMode && userLocation && (
+          <div className="nearby-info">
+            📍 {filteredAds.length} offers
+          </div>
+        )}
+        
+        {!nearbyMode && offersWithLocation > 0 && (
+          <div className="nearby-hint">
+            💡 {offersWithLocation} offers have locations
+          </div>
+        )}
+      </div>
+      
       <Feed ads={filteredAds} />
       
       <div className="results-count">
-        {filteredAds.length} offer{filteredAds.length !== 1 ? 's' : ''} found
+        {filteredAds.length} offer{filteredAds.length !== 1 ? 's' : ''}
         {nearbyMode && userLocation && ` • Within ${radius}km`}
-        {!nearbyMode && offersWithLocation > 0 && ` • ${offersWithLocation} offers have locations`}
       </div>
+      
+      <button className="scroll-top-btn" onClick={() => {
+        document.querySelector('.feed-container')?.scrollTo({ top: 0, behavior: 'smooth' });
+      }}>
+        ↑
+      </button>
     </div>
   );
 }
